@@ -28,7 +28,7 @@ export function Droppable(props: { id: string; children: React.ReactNode }) {
 
 }
 function Draggable(props: { id: string; children: React.ReactNode }) {
-  const {attributes, listeners, setNodeRef, transform} = useDraggable({
+  const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({
     id: props.id,
   });
   const style = {
@@ -369,7 +369,7 @@ const CoursesPage = () => {
                         </div>
                     ))}
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col self-start sticky top-0">
                     <div className="flex flex-col rounded-lg">
                         <div className='py-2 px-4 bg-gray-50'>
                             其餘選修
@@ -379,18 +379,20 @@ const CoursesPage = () => {
                             <tr>
                                 <td>課號</td>
                                 <td>課名</td>
-                                <td>學分</td>
                                 <td>科類</td>
                             </tr>
                         </thead>
                         <tbody>
                             {courseStore.filter(mod => !mod.parent).map((course) => (
-                                <Draggable id={course.raw_id} key={course.raw_id}>
-                                    <td>{course.raw_id}</td>
+                                <tr>
+                                    <td>
+                                        <Draggable id={course.raw_id} key={course.raw_id}>
+                                            <Chip variant='outlined' size='sm'>{course.raw_id} - {course.credits}</Chip>
+                                        </Draggable>
+                                    </td>
                                     <td>{course.name}</td>
-                                    <td>{course.credits}</td>
                                     <td>{getType(course.type)}</td>
-                                </Draggable>
+                                </tr>
                             ))}
                         </tbody>
                     </Table>

@@ -2,45 +2,51 @@
 import { DndContext } from '@dnd-kit/core';
 import { Button, Chip, Snackbar } from '@mui/joy';
 import Table from '@mui/joy/Table';
-import { useEffect, useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle } from 'react-feather';
-import {useDroppable} from '@dnd-kit/core';
-import {useDraggable, DragEndEvent} from '@dnd-kit/core';
-import {CSS} from '@dnd-kit/utilities';
+import { useDroppable } from '@dnd-kit/core';
+import { useDraggable, DragEndEvent } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 import { Course } from '@/types/course';
 import { Funnel, categories } from '@/const/funnel';
 
 
-export function Droppable(props: { id: string; children: React.ReactNode }) {
-  const {isOver, setNodeRef} = useDroppable({
-    id: props.id,
-  });
-  const style = {
-    opacity: isOver ? 1 : 0.5,
-    height: '100%',
-  };
+export function Droppable(props: { id: string; funnel: Funnel; courseStore: Course[], courses: Course[] }) {
+    const { isOver, active, setNodeRef } = useDroppable({
+        id: props.id,
+    });
 
-  return (
-    <div ref={setNodeRef} style={style}>
-      {props.children}
-    </div>
-  );
+    const isValid = active ? props.funnel.matcher(props.courseStore.find(mod => active.id == mod.raw_id)!): undefined;
+
+    const style: CSSProperties = {
+        backgroundColor: active ? (isValid ? '#d1ffcf' : '#ebebeb'): '#ffffff',
+        height: '100%',
+    };
+
+    return (
+        <div ref={setNodeRef} style={style}>
+            <div className='flex flex-col gap-2 h-full'>
+                {props.courses.map(course => (
+                    <Draggable course={course} />
+                ))}
+            </div>
+        </div>
+    );
 
 }
-function Draggable(props: { id: string; children: React.ReactNode }) {
-  const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({
-    id: props.id,
-  });
-  const style = {
-    // Outputs `translate3d(x, y, 0)`
-    transform: CSS.Translate.toString(transform),
-  };
+function Draggable(props: { course: Course }) {
+    const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+        id: props.course.raw_id,
+    });
+    const style = {
+        transform: CSS.Translate.toString(transform),
+    };
 
-  return (
-    <tr ref={setNodeRef} style={style} {...listeners} {...attributes}>
-      {props.children}
-    </tr>
-  );
+    return (
+        <tr ref={setNodeRef} style={style} {...listeners} {...attributes}>
+            <Chip variant='outlined' size='sm'><span className='font-mono'>{props.course.raw_id}</span> - {props.course.credits}分</Chip>
+        </tr>
+    );
 }
 const CoursesPage = () => {
     const [open, setOpen] = useState(false);
@@ -216,7 +222,222 @@ const CoursesPage = () => {
         }
     ]
 
-    const [courseStore, setCourseStore] = useState<(Course & { parent?: string}) []>(inputCourses);
+    // JUSTIN
+    // PHYS113306	普通物理Ｂ一    3
+    // PHYS101009	普通物理實驗一  1
+    // PE 111027	大一體育        0
+    // MATH101006	微積分Ａ一      4
+    // LANG101010	中高級英文一    2
+    // EECS101003	邏輯設計    3
+    // EE 231001	計算機程式設計  3
+    // CL 101043	大學中文    2    
+    // ZY 100222	服務學習--黃昏的邂逅：建功高中課輔  0
+    // PHYS114306	普通物理Ｂ二   3
+    // PE 206090	羽球初學       0
+    // MATH102006	微積分Ａ二   4
+    // LANG102010	中高級英文二    2
+    // GE 125700	聖經與人生  2
+    // FL 344500	從《哈利波特》學英文    2
+    // EECS207001	邏輯設計實驗    2
+    // EECS203002	常微分方程  3
+    // ZY 100034	服務學習--校園國際交換生服務計畫 0  
+    // PE 205020	速度、敏捷及反應訓練    0
+    // LE 130101	基礎泰語一  3
+    // GEC 150402	前近代科學史    3
+    // GEC 110700	思想經典：存在主義經典選讀  2
+    // EECS203001	常微分方程 3
+    // LANG200038	中高級選讀英文-小說選讀 2
+    // GEC 140401	全球政治經濟學  3
+    // GE 178200	針灸與近代科學 2
+    // EECS202001	訊號與系統  3
+    // EE 223001	邏輯設計實驗   2
+    // CS 333202	機率    3
+    // EECS205000	線性代數 3
+
+    // const inputCourses: Course[] = [
+    //     {
+    //         raw_id: 'PHYS113306',
+    //         type: 'normal',
+    //         name: '普通物理Ｂ一',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'PHYS101009',
+    //         type: 'normal',
+    //         name: '普通物理實驗一',
+    //         credits: 1,
+    //     },
+    //     {
+    //         raw_id: 'PE  111027',
+    //         type: 'normal',
+    //         name: '大一體育',
+    //         credits: 0,
+    //     },
+    //     {
+    //         raw_id: 'MATH101006',
+    //         type: 'normal',
+    //         name: '微積分Ａ一',
+    //         credits: 4,
+    //     },
+    //     {
+    //         raw_id: 'LANG101010',
+    //         type: 'normal',
+    //         name: '中高級英文一',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'EECS101003',
+    //         type: 'normal',
+    //         name: '邏輯設計',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'EE  231001',
+    //         type: 'normal',
+    //         name: '計算機程式設計',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'CL  101043',
+    //         type: 'normal',
+    //         name: '大學中文',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'ZY  100222',
+    //         type: 'normal',
+    //         name: '服務學習--黃昏的邂逅：建功高中課輔',
+    //         credits: 0,
+    //     },
+    //     {
+    //         raw_id: 'PHYS114306',
+    //         type: 'normal',
+    //         name: '普通物理Ｂ二',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'PE  206090',
+    //         type: 'normal',
+    //         name: '羽球初學',
+    //         credits: 0,
+    //     },
+    //     {
+    //         raw_id: 'MATH102006',
+    //         type: 'normal',
+    //         name: '微積分Ａ二',
+    //         credits: 4,
+    //     },
+    //     {
+    //         raw_id: 'LANG102010',
+    //         type: 'normal',
+    //         name: '中高級英文二',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'GE  125700',
+    //         type: 'normal',
+    //         name: '聖經與人生',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'FL  344500',
+    //         type: 'normal',
+    //         name: '從《哈利波特》學英文',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'EECS207001',
+    //         type: 'normal',
+    //         name: '邏輯設計實驗',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'EECS203002',
+    //         type: 'normal',
+    //         name: '常微分方程',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'ZY  100034',
+    //         type: 'normal',
+    //         name: '服務學習--校園國際交換生服務計畫',
+    //         credits: 0,
+    //     },
+    //     {
+    //         raw_id: 'PE  205020',
+    //         type: 'normal',
+    //         name: '速度、敏捷及反應訓練',
+    //         credits: 0,
+    //     },
+    //     {
+    //         raw_id: 'LE  130101',
+    //         type: 'normal',
+    //         name: '基礎泰語一',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'GEC 150402',
+    //         type: 'normal',
+    //         name: '前近代科學史',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'GEC 110700',
+    //         type: 'normal',
+    //         name: '思想經典：存在主義經典選讀',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'EECS203001',
+    //         type: 'normal',
+    //         name: '常微分方程',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'LANG200038',
+    //         type: 'normal',
+    //         name: '中高級選讀英文-小說選讀',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'GEC 140401',
+    //         type: 'normal',
+    //         name: '全球政治經濟學',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'GE  178200',
+    //         type: 'normal',
+    //         name: '針灸與近代科學',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'EECS202001',
+    //         type: 'normal',
+    //         name: '訊號與系統',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'EE  223001',
+    //         type: 'normal',
+    //         name: '邏輯設計實驗',
+    //         credits: 2,
+    //     },
+    //     {
+    //         raw_id: 'CS  333202',
+    //         type: 'normal',
+    //         name: '機率',
+    //         credits: 3,
+    //     },
+    //     {
+    //         raw_id: 'EECS205000',
+    //         type: 'normal',
+    //         name: '線性代數',
+    //         credits: 3,
+    //     },
+    // ]
+
+    const [courseStore, setCourseStore] = useState<(Course & { parent?: string })[]>(inputCourses);
 
     // now we should funnel the courses into the categories
     // first create a copy of inputCourses
@@ -257,45 +478,45 @@ const CoursesPage = () => {
         return categories.map(category => {
             const catfun = category.funnels.map(funnel => {
                 const matchedCourses = courseStore.filter(course => course.parent == funnel.name);
-                if(funnel.countType == 'course') {
+                if (funnel.countType == 'course') {
                     const sum = matchedCourses.length;
                     const valid = funnel.minCount ? (sum >= funnel.minCount) : true;
-                    return {...funnel, sum, valid};
+                    return { ...funnel, sum, valid };
                 } else {
                     const sum = matchedCourses.reduce((acc, cur) => acc + cur.credits, 0);
                     const valid = funnel.minCount ? (sum >= funnel.minCount) : true;
-                    return {...funnel, sum, valid };
+                    return { ...funnel, sum, valid };
                 }
             })
-            if(category.countType) {
+            if (category.countType) {
                 const sum = catfun.reduce((acc, cur) => {
                     const matchedCourses = courseStore.filter(course => course.parent == cur.name);
-                    if(category.countType == 'course') {
+                    if (category.countType == 'course') {
                         return acc + matchedCourses.length;
                     } else {
                         return acc + matchedCourses.reduce((acc, cur) => acc + cur.credits, 0);
                     }
                 }, 0);
                 const valid = category.minCount ? (sum >= category.minCount) : true;
-                return {...category, funnels: catfun, sum, valid};
+                return { ...category, funnels: catfun, sum, valid };
             }
-            return {...category, funnels: catfun};
+            return { ...category, funnels: catfun };
         })
     }
 
     const moveCourse = (courseId: string, to: string | undefined) => {
         //get the to funnel
-        if(to) {
+        if (to) {
             let toFunnel: Funnel | undefined = undefined;
             categories.forEach(category => {
                 const funnel = category.funnels.find(funnel => funnel.name == to);
-                if(funnel) {
+                if (funnel) {
                     toFunnel = funnel;
                 }
             });
             //check if the course can be matched to the funnel
             const course = courseStore.find(course => course.raw_id == courseId);
-            if(!toFunnel!.matcher(course!)) {
+            if (!toFunnel!.matcher(course!)) {
                 setOpen(true);
                 return;
             }
@@ -317,7 +538,7 @@ const CoursesPage = () => {
         console.log(props)
         moveCourse(props.active.id as string, props.over?.id as string)
     }
-    
+
 
     return <div className="flex flex-col">
         <DndContext onDragEnd={handleDragEnd}>
@@ -326,40 +547,32 @@ const CoursesPage = () => {
                     {funnelResults.map(category => (
                         <div className="flex flex-col rounded-lg">
                             <div className='py-2 px-4 bg-gray-50'>
-                                {category.title}
+                                <span className=''>{category.title}</span>
                             </div>
                             <Table aria-label="basic table" size='sm'>
                                 <thead>
                                     <tr>
                                         <td className='w-12'>狀態</td>
                                         <td>科目</td>
-                                        <td>修課記錄</td>
+                                        <td className='w-32'>修課記錄</td>
                                         <td className='w-12'>缺</td>
                                         <td>動作</td>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody> 
                                     {category.funnels.map(fr => <tr>
                                         <td>
-                                            {fr?.minCount && 
-                                                (fr.valid ? 
+                                            {fr?.minCount &&
+                                                (fr.valid ?
                                                     <CheckCircle color='green' size={16} /> :
                                                     <AlertTriangle color='red' size={16} />
                                                 )}
                                         </td>
                                         <td>{fr.name}</td>
                                         <td>
-                                            <Droppable id={fr.name}>
-                                                <div className='flex flex-col gap-2 h-full'>
-                                                    {courseStore.filter(mod => mod.parent == fr.name).map(funnel => (
-                                                        <Draggable id={funnel.raw_id}>
-                                                            <Chip variant='outlined' size='sm'>{funnel.raw_id} - {funnel.credits}</Chip>
-                                                        </Draggable>
-                                                    ))}
-                                                </div>
-                                            </Droppable>
+                                            <Droppable id={fr.name} funnel={fr} courses={courseStore.filter(mod => mod.parent == fr.name)} courseStore={courseStore} />
                                         </td>
-                                        <td>{fr?.minCount ? (fr.minCount - fr.sum) : ''} {fr.countType == 'course' ? "堂": "分"}</td>
+                                        <td>{fr?.minCount ? (fr.minCount - fr.sum) : ''} {fr.countType == 'course' ? "堂" : "分"}</td>
                                         <td>
                                             {!fr.valid && <Button variant="soft" color="neutral" size='sm'>申請免修</Button>}
                                         </td>
@@ -375,52 +588,27 @@ const CoursesPage = () => {
                             其餘選修
                         </div>
                         <Table aria-label="basic table">
-                        <thead>
-                            <tr>
-                                <td>課號</td>
-                                <td>課名</td>
-                                <td>科類</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {courseStore.filter(mod => !mod.parent).map((course) => (
+                            <thead>
                                 <tr>
-                                    <td>
-                                        <Draggable id={course.raw_id} key={course.raw_id}>
-                                            <Chip variant='outlined' size='sm'>{course.raw_id} - {course.credits}</Chip>
-                                        </Draggable>
-                                    </td>
-                                    <td>{course.name}</td>
-                                    <td>{getType(course.type)}</td>
+                                    <td>課號</td>
+                                    <td>課名</td>
+                                    <td>科類</td>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {courseStore.filter(mod => !mod.parent).map((course) => (
+                                    <tr>
+                                        <td>
+                                            <Draggable course={course} />
+                                        </td>
+                                        <td>{course.name}</td>
+                                        <td>{getType(course.type)}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
                     </div>
-
                 </div>
-                {/* <div className="flex flex-col">
-                    <Table aria-label="basic table">
-                        <thead>
-                            <tr>
-                                <td>課號</td>
-                                <td>課名</td>
-                                <td>學分</td>
-                                <td>科類</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {inputCourses.map((course) => (
-                                <tr key={course.raw_id}>
-                                    <td>{course.raw_id}</td>
-                                    <td>{course.name}</td>
-                                    <td>{course.credits}</td>
-                                    <td>{getType(course.type)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </Table>
-                </div> */}
             </div>
         </DndContext>
         <Snackbar

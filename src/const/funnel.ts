@@ -1,23 +1,11 @@
 import { Course } from "@/types/course";
+import { FunnelCategory } from "@/types/funnels";
 
-export type Funnel = {
-    name: string;
-    matcher: (course: Course) => boolean;
-    countType: 'credits' | 'course';
-    minCount?: number;
-}
-
-export type FunnelCategory = {
-    title: string;
-    funnels: Funnel[];
-    countType?: 'credits' | 'course'; // default to 'credits
-    minCount?: number;
-}
 
 export const categories: FunnelCategory[] = [
     {
         title: '校訂必修',
-        minCount: 30,
+        minCount: 10,
         countType: 'credits',
         funnels: [
             // 大學中文 2
@@ -42,12 +30,6 @@ export const categories: FunnelCategory[] = [
                 minCount: 8,
             },
             {
-                name: '通識課',
-                matcher: (course: Course) => course.raw_id.startsWith('GE'),
-                countType: 'credits',
-                minCount: 20,
-            },
-            {
                 name: '大一體育',
                 matcher: (course: Course) => course.raw_id.startsWith('PE  1110'),
                 countType: 'course',
@@ -64,6 +46,25 @@ export const categories: FunnelCategory[] = [
                 matcher: (course: Course) => course.raw_id.startsWith('ZY'),
                 countType: 'course',
                 minCount: 2,
+            },
+        ]
+    },
+    {
+        title: '通識課',
+        countType: 'credits',
+        minCount: 20,
+        funnels: [
+            {
+                name: '選修通識',
+                matcher: (course: Course) => course.raw_id.startsWith('GE') || course.raw_id.startsWith('GEC'),
+                countType: 'credits',
+                minCount: 12,
+            },
+            {
+                name: '核心通識',
+                matcher: (course: Course) => course.raw_id.startsWith('GEC'),
+                countType: 'credits',
+                minCount: 12,
             },
         ]
     },

@@ -12,6 +12,7 @@ import Sheet from '@mui/joy/Sheet';
 
 import { Sun, Clipboard, Columns, HelpCircle, Settings, LogOut } from 'react-feather';
 import { closeSidebar } from '@/utils/sidebar';
+import { Link } from '@mui/joy';
 
 export default function Sidebar() {
   return (
@@ -98,21 +99,25 @@ export default function Sidebar() {
           }}
         >
           <ListItem>
-            <ListItemButton>
-              <Columns />
-              <ListItemContent>
-                <Typography level="title-sm">修課表單</Typography>
-              </ListItemContent>
-            </ListItemButton>
+            <Link href="/courses">
+              <ListItemButton>
+                <Columns />
+                <ListItemContent>
+                  <Typography level="title-sm">修課表單</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </Link>
           </ListItem>
 
           <ListItem>
-            <ListItemButton>
-              <Clipboard />
-              <ListItemContent>
-                <Typography level="title-sm">免修申請</Typography>
-              </ListItemContent>
-            </ListItemButton>
+            <Link href="/waiver">
+              <ListItemButton>
+                <Clipboard />
+                <ListItemContent>
+                  <Typography level="title-sm">免修申請</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </Link>
           </ListItem>
         </List>
 

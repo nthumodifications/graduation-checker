@@ -8,7 +8,8 @@ import { useDroppable } from '@dnd-kit/core';
 import { useDraggable, DragEndEvent } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { Course } from '@/types/course';
-import { Funnel, categories } from '@/const/funnel';
+import { categories } from '@/const/funnel';
+import { Funnel, FunnelCategory } from '@/types/funnels';
 
 
 export function Droppable(props: { id: string; funnel: Funnel; courseStore: Course[], courses: Course[] }) {
@@ -27,7 +28,7 @@ export function Droppable(props: { id: string; funnel: Funnel; courseStore: Cour
         <div ref={setNodeRef} style={style}>
             <div className='flex flex-col gap-2 h-full'>
                 {props.courses.map(course => (
-                    <Draggable course={course} />
+                    <Draggable key={course.name} course={course} />
                 ))}
             </div>
         </div>
@@ -44,7 +45,7 @@ function Draggable(props: { course: Course }) {
 
     return (
         <tr ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            <Chip variant='outlined' size='sm'><span className='font-mono'>{props.course.raw_id}</span> - {props.course.credits}分</Chip>
+            <Chip variant='outlined' size='sm'><span className='font-mono'>{props.course.raw_id}</span> - {props.course.credits}學分</Chip>
         </tr>
     );
 }
@@ -115,7 +116,7 @@ const CoursesPage = () => {
         {
             raw_id: 'EECS203002',
             type: 'normal',
-            name: '常微分方程',
+            name: '常微學分方程',
             credits: 3,
         },
         {
@@ -133,11 +134,35 @@ const CoursesPage = () => {
         {
             raw_id: 'MATH102007',
             type: 'normal',
-            name: '微積分Ａ二',
+            name: '微積學分Ａ二',
             credits: 4,
         },
         {
             raw_id: 'PE  206096',
+            type: 'normal',
+            name: '羽球初學',
+            credits: 0,
+        },
+        {
+            raw_id: 'PE  2060961',
+            type: 'normal',
+            name: '羽球初學',
+            credits: 0,
+        },
+        {
+            raw_id: 'PE  2060962',
+            type: 'normal',
+            name: '羽球初學',
+            credits: 0,
+        },
+        {
+            raw_id: 'PE  2060963',
+            type: 'normal',
+            name: '羽球初學',
+            credits: 0,
+        },
+        {
+            raw_id: 'PE  2060964',
             type: 'normal',
             name: '羽球初學',
             credits: 0,
@@ -193,7 +218,7 @@ const CoursesPage = () => {
         {
             raw_id: 'MATH101007',
             type: 'normal',
-            name: '微積分Ａ一',
+            name: '微積學分Ａ一',
             credits: 4,
         },
         {
@@ -222,38 +247,6 @@ const CoursesPage = () => {
         }
     ]
 
-    // JUSTIN
-    // PHYS113306	普通物理Ｂ一    3
-    // PHYS101009	普通物理實驗一  1
-    // PE 111027	大一體育        0
-    // MATH101006	微積分Ａ一      4
-    // LANG101010	中高級英文一    2
-    // EECS101003	邏輯設計    3
-    // EE 231001	計算機程式設計  3
-    // CL 101043	大學中文    2    
-    // ZY 100222	服務學習--黃昏的邂逅：建功高中課輔  0
-    // PHYS114306	普通物理Ｂ二   3
-    // PE 206090	羽球初學       0
-    // MATH102006	微積分Ａ二   4
-    // LANG102010	中高級英文二    2
-    // GE 125700	聖經與人生  2
-    // FL 344500	從《哈利波特》學英文    2
-    // EECS207001	邏輯設計實驗    2
-    // EECS203002	常微分方程  3
-    // ZY 100034	服務學習--校園國際交換生服務計畫 0  
-    // PE 205020	速度、敏捷及反應訓練    0
-    // LE 130101	基礎泰語一  3
-    // GEC 150402	前近代科學史    3
-    // GEC 110700	思想經典：存在主義經典選讀  2
-    // EECS203001	常微分方程 3
-    // LANG200038	中高級選讀英文-小說選讀 2
-    // GEC 140401	全球政治經濟學  3
-    // GE 178200	針灸與近代科學 2
-    // EECS202001	訊號與系統  3
-    // EE 223001	邏輯設計實驗   2
-    // CS 333202	機率    3
-    // EECS205000	線性代數 3
-
     // const inputCourses: Course[] = [
     //     {
     //         raw_id: 'PHYS113306',
@@ -276,7 +269,7 @@ const CoursesPage = () => {
     //     {
     //         raw_id: 'MATH101006',
     //         type: 'normal',
-    //         name: '微積分Ａ一',
+    //         name: '微積學分Ａ一',
     //         credits: 4,
     //     },
     //     {
@@ -324,7 +317,7 @@ const CoursesPage = () => {
     //     {
     //         raw_id: 'MATH102006',
     //         type: 'normal',
-    //         name: '微積分Ａ二',
+    //         name: '微積學分Ａ二',
     //         credits: 4,
     //     },
     //     {
@@ -354,7 +347,7 @@ const CoursesPage = () => {
     //     {
     //         raw_id: 'EECS203002',
     //         type: 'normal',
-    //         name: '常微分方程',
+    //         name: '常微學分方程',
     //         credits: 3,
     //     },
     //     {
@@ -390,7 +383,7 @@ const CoursesPage = () => {
     //     {
     //         raw_id: 'EECS203001',
     //         type: 'normal',
-    //         name: '常微分方程',
+    //         name: '常微學分方程',
     //         credits: 3,
     //     },
     //     {
@@ -437,6 +430,28 @@ const CoursesPage = () => {
     //     },
     // ]
 
+    
+    const overrides = [
+        {
+            target: 'funnel',
+            target_id: "英文領域",
+            action: 'disable',
+            name: '免修英文'
+        },
+        {
+            target: 'course',
+            target_id: "CS  235102",
+            action: 'replace',
+            name: '免修課程',
+            data: {
+                raw_id: 'LANG101010',
+                type: 'normal',
+                name: '中高級英文一',
+                credits: 2,
+            }
+        }
+    ]
+
     const [courseStore, setCourseStore] = useState<(Course & { parent?: string })[]>(inputCourses);
 
     // now we should funnel the courses into the categories
@@ -448,35 +463,59 @@ const CoursesPage = () => {
     // return the array of { category: { funnel, course[] }} pair
     // and the array of unmatched courses
 
-    const autoMatchCourses = () => {
-        const copy = [...inputCourses];
+    const autoMatchCourses = (categories: FunnelCategory[], courses: Course[]) => {
+        const copy = [...courses];
+        const newCourseStore: (Course & { parent?: string })[] = [...courses];
         categories.map(category => {
+            if(category.disabled) return;
             category.funnels.map(funnel => {
+                if(funnel.disabled) return;
                 const matchedCourses = copy.filter(course => funnel.matcher(course));
-
-                setCourseStore(courseStore => {
-                    const newCourseStore = [...courseStore];
-                    matchedCourses.forEach(course => {
-                        const index = newCourseStore.findIndex(c => c.raw_id == course.raw_id);
-                        newCourseStore[index].parent = funnel.name;
-                    });
-                    return newCourseStore;
-                })
+                matchedCourses.forEach(course => {
+                    const index = newCourseStore.findIndex(c => c.raw_id == course.raw_id);
+                    newCourseStore[index].parent = funnel.name;
+                });
 
                 const unmatchedCourses = copy.filter(course => !funnel.matcher(course));
                 copy.splice(0, copy.length, ...unmatchedCourses);
             });
         });
+        setCourseStore(newCourseStore);
     }
 
     useEffect(() => {
-        autoMatchCourses();
+        //create copy of inputCourses and categories
+        const categoriesCopy = [...categories];
+        const courseCopy = [...inputCourses];
+        //then handle overrides first
+        overrides.forEach(override => {
+            if (override.target == 'funnel') {
+                // for each category, for each funnel, if funnel.name == override.target_id, then disable the funnel
+                categoriesCopy.forEach(category => {
+                    category.funnels.forEach(funnel => {
+                        if (funnel.name == override.target_id) {
+                            funnel.disabled = true;
+                        }
+                    })
+                })
+            } else if (override.target == 'course') {
+                const index = courseCopy.findIndex(course => course.raw_id == override.target_id);
+                if (index != -1) {
+                    courseCopy[index] = override.data!;
+                }
+            }
+        });
+
+        autoMatchCourses(categoriesCopy, courseCopy);
     }, []);
 
     //move calculating the sums to this new function
     const funnelsWithSum = () => {
         return categories.map(category => {
+            if(category.disabled) return { ...category, funnels: category.funnels.map(funnel => ({ ...funnel, sum: 0, valid: true })), sum: 0, valid: true };
             const catfun = category.funnels.map(funnel => {
+                if(funnel.disabled) return { ...funnel, sum: 0, valid: true };
+                
                 const matchedCourses = courseStore.filter(course => course.parent == funnel.name);
                 if (funnel.countType == 'course') {
                     const sum = matchedCourses.length;
@@ -490,6 +529,7 @@ const CoursesPage = () => {
             })
             if (category.countType) {
                 const sum = catfun.reduce((acc, cur) => {
+                    if(cur.disabled) return acc + (cur.minCount || 0);
                     const matchedCourses = courseStore.filter(course => course.parent == cur.name);
                     if (category.countType == 'course') {
                         return acc + matchedCourses.length;
@@ -497,6 +537,7 @@ const CoursesPage = () => {
                         return acc + matchedCourses.reduce((acc, cur) => acc + cur.credits, 0);
                     }
                 }, 0);
+                console.log(sum);
                 const valid = category.minCount ? (sum >= category.minCount) : true;
                 return { ...category, funnels: catfun, sum, valid };
             }
@@ -545,9 +586,15 @@ const CoursesPage = () => {
             <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
                     {funnelResults.map(category => (
-                        <div className="flex flex-col rounded-lg">
-                            <div className='py-2 px-4 bg-gray-50'>
+                        <div key={category.title} className="flex flex-col rounded-lg">
+                            <div className='py-2 px-4 bg-gray-50 flex flex-row gap-2 items-center'>
                                 <span className=''>{category.title}</span>
+                                {category.countType &&
+                                // @ts-ignore
+                                    (category.valid ?
+                                        <CheckCircle color='green' size={16} /> :
+                                        <AlertTriangle color='red' size={16} />
+                                    )}
                             </div>
                             <Table aria-label="basic table" size='sm'>
                                 <thead>
@@ -555,12 +602,13 @@ const CoursesPage = () => {
                                         <td className='w-12'>狀態</td>
                                         <td>科目</td>
                                         <td className='w-32'>修課記錄</td>
-                                        <td className='w-12'>缺</td>
+                                        <td className='w-14'>缺</td>
                                         <td>動作</td>
                                     </tr>
                                 </thead>
                                 <tbody> 
-                                    {category.funnels.map(fr => <tr>
+                                    {category.funnels.map(fr => !fr.disabled ? 
+                                    <tr key={fr.name}>
                                         <td>
                                             {fr?.minCount &&
                                                 (fr.valid ?
@@ -572,11 +620,21 @@ const CoursesPage = () => {
                                         <td>
                                             <Droppable id={fr.name} funnel={fr} courses={courseStore.filter(mod => mod.parent == fr.name)} courseStore={courseStore} />
                                         </td>
-                                        <td>{fr?.minCount ? (fr.minCount - fr.sum) : ''} {fr.countType == 'course' ? "堂" : "分"}</td>
+                                        <td>{fr?.minCount ? (fr.minCount - fr.sum) : ''} {fr.countType == 'course' ? "堂" : "學分"}</td>
                                         <td>
                                             {!fr.valid && <Button variant="soft" color="neutral" size='sm'>申請免修</Button>}
                                         </td>
-                                    </tr>)}
+                                    </tr>:
+                                    <tr>
+                                        <td>
+                                            <CheckCircle color='green' size={16} />
+                                        </td>
+                                        <td>{fr.name}</td>
+                                        <td>免修</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    )}
                                 </tbody>
                             </Table>
                         </div>
@@ -597,7 +655,7 @@ const CoursesPage = () => {
                             </thead>
                             <tbody>
                                 {courseStore.filter(mod => !mod.parent).map((course) => (
-                                    <tr>
+                                    <tr key={course.name}>
                                         <td>
                                             <Draggable course={course} />
                                         </td>

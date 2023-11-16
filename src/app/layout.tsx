@@ -3,7 +3,7 @@ import './globals.css'
 import Header from '@/components/Header'
 import Sidebar from '@/components/Sidebar'
 import { Box } from '@mui/joy'
-
+import { SnackbarProvider } from '@/components/Snackbar'
 export const metadata: Metadata = {
   title: '電資院學士班 - 畢業審查',
   description: '國立清華大學電機資訊學院學士班畢業審查系統',
@@ -16,6 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <SnackbarProvider>
       <body>
         <Box sx={{ display: 'flex', minHeight: '100dvh' }}>
           <Header />
@@ -49,6 +50,7 @@ export default function RootLayout({
           >{children}</Box>
         </Box>
       </body>
+      </SnackbarProvider>
     </html>
   )
 }

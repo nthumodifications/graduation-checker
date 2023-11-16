@@ -1,6 +1,4 @@
 'use server';
-
-import {Inputs} from '@/app/waiver/page';
 import supabase_server from '@/config/supabase_server';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -45,12 +43,24 @@ export const submitWaiverRequest = async (formData: FormData) => {
             from_credits: parseInt(inputs.from_credits),
             to_course_code: inputs.to_course_code,
             evidence: evidences,
+            status: 'PENDING'
         }
     ]);
-    console.log(status)
     if (error) {
         console.error(error);
         throw error;
     }
     return;
+}
+
+export const getWaiverRequests = async () => {
+    //TODO: get user id from session
+    const user_id = '111060062';
+    const { data, error } = await supabase_server.from('waivers').select('*').eq('user_id', user_id);
+
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+    return data;
 }

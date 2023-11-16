@@ -46,6 +46,7 @@ export interface Database {
           id: number
           reason: string
           reviewee: string
+          status: Database["public"]["Enums"]["WaiverStatus"]
           to_course_code: string
           user_id: string
         }
@@ -61,6 +62,7 @@ export interface Database {
           id?: number
           reason: string
           reviewee: string
+          status?: Database["public"]["Enums"]["WaiverStatus"]
           to_course_code: string
           user_id: string
         }
@@ -76,6 +78,7 @@ export interface Database {
           id?: number
           reason?: string
           reviewee?: string
+          status?: Database["public"]["Enums"]["WaiverStatus"]
           to_course_code?: string
           user_id?: string
         }
@@ -104,7 +107,7 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      WaiverStatus: "PENDING" | "RETURNED" | "REJECTED" | "APPROVED"
     }
     CompositeTypes: {
       [_ in never]: never

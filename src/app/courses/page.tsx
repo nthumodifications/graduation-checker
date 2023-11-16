@@ -537,7 +537,6 @@ const CoursesPage = () => {
                         return acc + matchedCourses.reduce((acc, cur) => acc + cur.credits, 0);
                     }
                 }, 0);
-                console.log(sum);
                 const valid = category.minCount ? (sum >= category.minCount) : true;
                 return { ...category, funnels: catfun, sum, valid };
             }
@@ -576,7 +575,6 @@ const CoursesPage = () => {
     }, [courseStore]);
 
     function handleDragEnd(props: DragEndEvent) {
-        console.log(props)
         moveCourse(props.active.id as string, props.over?.id as string)
     }
 

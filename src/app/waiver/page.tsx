@@ -2,8 +2,6 @@ import { getWaiverRequests } from "@/lib/waiver";
 import WaiverForm from "./WaiverForm";
 import {Waiver} from '@/config/supabase';
 
-export const revalidate = 0;
-
 const WaiverRequestList = async () => {
     const requests = await getWaiverRequests();
     
@@ -29,6 +27,9 @@ const WaiverRequestList = async () => {
     </div>
     
 }
+
+export const revalidate = 0;
+
 const WaiverPage = () => {
     return (
         <div className="flex flex-col gap-4">

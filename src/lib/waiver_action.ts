@@ -3,27 +3,18 @@ import supabase_server from '@/config/supabase_server';
 import { v4 as uuidv4 } from 'uuid';
 import { revalidatePath } from 'next/cache'
 import { WaiverReview } from '@/types/waiver';
+import { Inputs } from '@/app/waiver/WaiverForm';
 
-export const submitWaiverRequest = async (formData: FormData) => {
-    const inputs = {
-        reviewer: formData.get('reviewer') as string,
-        reason: formData.get('reason') as string,
-        from_course_code: formData.get('from_course_code') as string,
-        from_name: formData.get('from_name') as string,
-        from_department: formData.get('from_department') as string,
-        from_grade: formData.get('from_grade') as string,
-        from_instructor: formData.get('from_instructor') as string,
-        from_credits: formData.get('from_credits') as string,
-        to_course_code: formData.get('to_course_code') as string,
-        evidence: formData.getAll('evidence') as File[],
-    }
-
+export const submitWaiverRequest = async (inputs: Omit<Inputs, 'evidence'> & { evidence: FormData }) => {
     //TODO: validate inputs
 
     //validate if the user has already submitted a waiver request the same to_course_code
 
+    //convert FormData to array of files
+    const evidenceFiles = Array.from(inputs.evidence.values()) as File[];
+
     //first upload the files to supabase storage with random UUIDs
-    const evidences = await Promise.all(inputs.evidence.map(async (file) => {
+    const evidences = await Promise.all(Array.from(evidenceFiles).map(async (file) => {
         const uuid = uuidv4();
         const ext = file.name.split('.').pop();
         const filename = `${uuid}.${ext}`;
@@ -33,7 +24,7 @@ export const submitWaiverRequest = async (formData: FormData) => {
         }
         return filename;
     }));
-    const { error, status } = await supabase_server.from('waivers').insert([
+    const { error } = await supabase_server.from('waivers').insert([
         {
             user_id: '111060062',
             reviewee: 'X123456',

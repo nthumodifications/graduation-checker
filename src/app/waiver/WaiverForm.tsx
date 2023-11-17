@@ -6,7 +6,7 @@ import TextareaControl from '@/components/FormComponents/TextareaControl';
 import {submitWaiverRequest} from '@/lib/waiver_action';
 import {Button} from '@mui/joy';
 import {useForm} from 'react-hook-form';
-import {useState} from 'react';
+import {useState, useTransition} from 'react';
 import {useSnackbar} from '@/components/Snackbar';
 
 export type Inputs = {
@@ -25,7 +25,7 @@ export type Inputs = {
 const WaiverForm = () => {
     const [submitted, setSubmitted] = useState(false);
     const { enqueueSnackbar } = useSnackbar();
-    const { control, trigger, watch, reset, formState: { errors } } = useForm<Inputs>({
+    const { control, trigger, watch, reset, handleSubmit, formState: { errors } } = useForm<Inputs>({
         defaultValues: {
             reason: "",
             from_department: "",
@@ -39,32 +39,32 @@ const WaiverForm = () => {
         },
         mode: "onChange"
     })
+    const [isPending, startTransition] = useTransition();
+
     const values = watch();
-    const onSubmit = async () => {
-        const valid = await trigger();
-        if (!valid) return;
-        const form = new FormData();
-        form.append("reason", values.reason);
-        form.append("from_department", values.from_department);
-        form.append("from_course_code", values.from_course_code);
-        form.append("from_name", values.from_name);
-        form.append("from_instructor", values.from_instructor);
-        form.append("from_credits", values.from_credits);
-        form.append("from_grade", values.from_grade);
-        form.append("to_course_code", values.to_course_code);
-        for (let i = 0; i < values.evidence!.length; i++) {
-            form.append("evidence", values.evidence![i]);
-        }
-        try {
-            await submitWaiverRequest(form);
-            setSubmitted(true);
-        } catch (e) {
-            enqueueSnackbar('Something went wrong when submitting', { variant: "error" });
-        }
+    const onSubmit = async (form: Inputs) => {
+        startTransition(async () => {
+            try {
+                // create a new FormData object to store files
+                const formData = new FormData();
+                // append each files to the FormData object
+                for (let i = 0; i < form.evidence!.length; i++) {
+                    formData.append('evidence', form.evidence![i]);
+                }
+                await submitWaiverRequest({
+                    ...form,
+                    evidence: formData
+                });
+                setSubmitted(true);
+            } catch (e) {
+                enqueueSnackbar('Something went wrong when submitting', { variant: "error" });
+            }
+        });
+        
     }
 
     if(!submitted) return (
-        <form action={onSubmit} className="flex flex-col gap-2 max-w-md">
+        <form className="flex flex-col gap-2 max-w-md" onSubmit={handleSubmit(onSubmit)}>
             <h1 className="text-2xl font-bold">Waiver Request</h1>
             <TextareaControl
                 control={control}

@@ -48,6 +48,7 @@ export interface Database {
           reviewee: string
           status: Database["public"]["Enums"]["WaiverStatus"]
           to_course_code: string
+          updated_on: string | null
           user_id: string
         }
         Insert: {
@@ -64,6 +65,7 @@ export interface Database {
           reviewee: string
           status?: Database["public"]["Enums"]["WaiverStatus"]
           to_course_code: string
+          updated_on?: string | null
           user_id: string
         }
         Update: {
@@ -80,6 +82,7 @@ export interface Database {
           reviewee?: string
           status?: Database["public"]["Enums"]["WaiverStatus"]
           to_course_code?: string
+          updated_on?: string | null
           user_id?: string
         }
         Relationships: [

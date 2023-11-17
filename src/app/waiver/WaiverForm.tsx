@@ -3,7 +3,7 @@ import InputFileUpload from '@/components/FormComponents/FileUploadControl';
 import InputControl from '@/components/FormComponents/InputControl';
 import SelectControl from '@/components/FormComponents/SelectControl';
 import TextareaControl from '@/components/FormComponents/TextareaControl';
-import {submitWaiverRequest} from '@/lib/waiver';
+import {submitWaiverRequest} from '@/lib/waiver_action';
 import {Button} from '@mui/joy';
 import {useForm} from 'react-hook-form';
 import {useState} from 'react';

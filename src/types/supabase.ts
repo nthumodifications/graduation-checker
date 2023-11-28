@@ -9,12 +9,69 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      overrides: {
+        Row: {
+          action: string
+          data: Json | null
+          id: number
+          name: string
+          target: string
+          target_id: string
+          user_id: string
+        }
+        Insert: {
+          action: string
+          data?: Json | null
+          id?: number
+          name: string
+          target: string
+          target_id: string
+          user_id: string
+        }
+        Update: {
+          action?: string
+          data?: Json | null
+          id?: number
+          name?: string
+          target?: string
+          target_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "overrides_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["user_id"]
+          }
+        ]
+      }
+      taken_courses: {
+        Row: {
+          courses: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          courses?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          courses?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           created_at: string
           email: string
           name_en: string
           name_zh: string
+          role: Database["public"]["Enums"]["Role"]
           user_id: string
         }
         Insert: {
@@ -22,6 +79,7 @@ export interface Database {
           email: string
           name_en: string
           name_zh: string
+          role?: Database["public"]["Enums"]["Role"]
           user_id: string
         }
         Update: {
@@ -29,6 +87,7 @@ export interface Database {
           email?: string
           name_en?: string
           name_zh?: string
+          role?: Database["public"]["Enums"]["Role"]
           user_id?: string
         }
         Relationships: []
@@ -110,6 +169,7 @@ export interface Database {
       [_ in never]: never
     }
     Enums: {
+      Role: "student" | "teacher"
       WaiverStatus: "PENDING" | "RETURNED" | "REJECTED" | "APPROVED"
     }
     CompositeTypes: {

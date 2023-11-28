@@ -578,7 +578,6 @@ const CoursesPage = () => {
         moveCourse(props.active.id as string, props.over?.id as string)
     }
 
-
     return <div className="flex flex-col">
         <DndContext onDragEnd={handleDragEnd}>
             <div className="grid grid-cols-2 gap-4">
@@ -653,7 +652,7 @@ const CoursesPage = () => {
                             </thead>
                             <tbody>
                                 {courseStore.filter(mod => !mod.parent).map((course) => (
-                                    <tr key={course.name}>
+                                    <tr key={course.raw_id}>
                                         <td>
                                             <Draggable course={course} />
                                         </td>
